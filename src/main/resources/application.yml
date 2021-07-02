@@ -1,0 +1,23 @@
+spring:
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/clbot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true
+    username: root
+    password: root
+
+# Mybatis-plus配置
+mybatis-plus:
+  #配置Mapper映射文件
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  # 配置MyBatis数据返回类型别名（默认别名是类名）
+  type-aliases-package: com.example.clbot.pojo
+  configuration:
+    # 自动驼峰命名
+    map-underscore-to-camel-case: false
+
+logging:
+  level:
+    com:
+      example:
+        mapper : debug
