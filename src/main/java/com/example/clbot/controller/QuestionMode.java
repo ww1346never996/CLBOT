@@ -18,38 +18,23 @@ public class QuestionMode {
     @Autowired
     IQuestionService questionService;
 
-    public Map<String, Question> responseMap() {
-        Map<String, Question> resultMap = new HashMap<String, Question>();
+    public List<Question> responseList() {
         List<Question> resultList = questionService.getQuestion();
-        for (Question question : resultList) {
-            resultMap.put(question.getQuestion(), question);
-        }
-        return resultMap;
-    }
-
-    public List<String> questionList(){
-        List<String> result = new ArrayList<String>();
-        List<Question> resultList = questionService.getQuestion();
-        for (Question question : resultList){
-            result.add(question.getQuestion());
-        }
-        return result;
+        return resultList;
     }
 
     public void response(Bot bot) {
-        AtomicReference<Map<String, Question>> resultMap = new AtomicReference<>(responseMap());
-        AtomicReference<List<String>> questions = new AtomicReference<>(questionList());
+        AtomicReference<List<Question>> questions = new AtomicReference<>(responseList());
         bot.getEventChannel().subscribeAlways(GroupMessageEvent.class, (event) -> {
             // 每次退出设置时更新查找表
             if (event.getMessage().contentToString().equals("/quitquestionmode")){
-                resultMap.set(responseMap());
-                questions.set(questionList());
+                questions.set(responseList());
             }
             // 检查关键字
-            for (String q : questions.get()){
-                if (event.getMessage().contentToString().contains(q)
-                        && resultMap.get().get(q).getGroup_id() == event.getGroup().getId()){
-                    event.getSubject().sendMessage(resultMap.get().get(q).getAnswer());
+            for (Question q : questions.get()){
+                if (event.getMessage().contentToString().contains(q.getQuestion())
+                        && q.getGroup_id() == event.getGroup().getId()){
+                    event.getSubject().sendMessage(q.getAnswer());
                 }
             }
         });
